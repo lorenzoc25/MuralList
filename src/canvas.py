@@ -7,6 +7,7 @@ import datetime
 
 fontPath = "fonts/arial.ttf"
 
+
 class Canvas:
     """
        make(width, height, color, text size, margin)
@@ -50,15 +51,16 @@ class Canvas:
             self.y_pos.append(self.y_pos[-1] + self.gap + self.text_size / 2)
         draw = ImageDraw.Draw(self.canvas)
         # coordinate
-        draw.text((self.margin, self.y_pos[-1]), self.items[-1], (255, 255, 255), font=self.font)
+        draw.text(
+            (self.margin, self.y_pos[-1]), self.items[-1], (255, 255, 255), font=self.font)
 
     def addDate(self):
         size = int(0.8 * self.text_size)
         draw = ImageDraw.Draw(self.canvas)
         date_font = ImageFont.truetype(fontPath, size)
         date = str(datetime.date.today())
-        draw.text((self.canvas.width - len(date) * size / 2 - self.margin, self.margin), date, (255, 255, 255)
-                  , font=date_font)
+        draw.text((self.canvas.width - len(date) * size / 2 - self.margin,
+                  self.margin), date, (255, 255, 255), font=date_font)
 
     def export(self):
         time = str(datetime.datetime.now())

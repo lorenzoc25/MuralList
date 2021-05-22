@@ -7,10 +7,7 @@ from canvas import Canvas
 from ui import UI
 
 
-
 t = UI()
 t.render()
 t.run()
 #s = t.get_task_as_strs()
-
-
