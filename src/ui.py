@@ -2,10 +2,16 @@
 import tkinter
 import tkinter.messagebox
 from tkinter import filedialog
-from tkinter import *
 from tkinter.ttk import *
+from tkinter import colorchooser
+from tkinter import simpledialog
 import pickle
 from canvas import Canvas
+
+
+def createButton(root, text, command):
+    buttonWitdh = 70
+    return tkinter.Button(root, text=text, width=buttonWitdh, command=command)
 
 
 class UI:
@@ -36,18 +42,19 @@ class UI:
         # st = Style()
         # st.configure('W.TButton', background='#345', foreground='black', font=('Arial', 14))
 
-        self.button_add_task = tkinter.Button(
-            self.root, text="Add task", width=buttonWitdh, command=self.add_task)  # style='W.TButton'
-        self.button_delete_task = tkinter.Button(
-            self.root, text="Delete task", width=buttonWitdh, command=self.delete_task)
-        self.button_load_tasks = tkinter.Button(
-            self.root, text="Load tasks", width=buttonWitdh, command=self.load_tasks)
-        self.button_save_tasks = tkinter.Button(
-            self.root, text="Save tasks", width=buttonWitdh, command=self.save_tasks)
-        self.button_select = tkinter.Button(
-            self.root, text="Select Image", width=buttonWitdh, command=self.select_img)
-        self.button_generate = tkinter.Button(
-            self.root, text="Generate", width=buttonWitdh, command=self.generate)
+        self.button_add_task = createButton(
+            self.root, "Add task", self.add_task)
+        self.button_delete_task = createButton(
+            self.root, "Delete task", self.delete_task)
+        self.button_load_tasks = createButton(
+            self.root, "Load tasks", self.load_tasks)
+        self.button_save_tasks = createButton(
+            self.root, "Save tasks", self.save_tasks)
+        self.button_select = createButton(
+            self.root, "Select Image", self.select_img)
+        self.button_generate = createButton(
+            self.root, "Generate", self.generate)
+        self.button_make = createButton(self.root, "Make", self.make)
 
         # image processing class canvas
         self.c = None
@@ -61,6 +68,7 @@ class UI:
         self.button_delete_task.pack()
         self.button_load_tasks.pack()
         self.button_save_tasks.pack()
+        self.button_make.pack()
         self.button_select.pack()
         self.button_generate.pack()
 
@@ -104,18 +112,30 @@ class UI:
         try:
             file_path = filedialog.askopenfilename()
             self.c = Canvas.open(file_path)
-            tkinter.messagebox.showinfo(
-                message="Image opened successfully. :D")
+            tkinter.messagebox.showinfo(message="Image opened successfully :D")
         except:
             tkinter.messagebox.showwarning(
                 title="Warning", message="Could not open the file, please try it again")
 
     def generate(self):
-        tasks = self.get_task_as_strs()
-        for task in tasks:
-            self.c.addItemTo(task)
-        self.c.addDate()
-        self.c.display()
+        try:
+            tasks = self.get_task_as_strs()
+            for task in tasks:
+                self.c.addItemTo(task)
+            self.c.addDate()
+            self.c.display()
+        except:
+            tkinter.messagebox.showwarning(
+                title="Warning", message="You haven't loaded/created anything!")
+
+    def make(self):
+        width = simpledialog.askstring(
+            title=" ", prompt="Please enter the width: ")
+        height = simpledialog.askstring(
+            title=" ", prompt="Please enter the height: ")
+        (rgb, hx) = colorchooser.askcolor(title="Choose your background color")
+        self.c = Canvas.make(int(width), int(height), hx)
+        tkinter.messagebox.showinfo(message="Image created successfully :D")
 
     def run(self):
         self.root.mainloop()
