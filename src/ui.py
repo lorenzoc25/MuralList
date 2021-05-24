@@ -45,9 +45,12 @@ class UI:
         self.button_save_tasks = tkinter.Button(
             self.root, text="Save tasks", width=buttonWitdh, command=self.save_tasks)
         self.button_select = tkinter.Button(
-            self.root, text="Select Image", width=buttonWitdh, command=self.select_img_and_generate)
+            self.root, text="Select Image", width=buttonWitdh, command=self.select_img)
+        self.button_generate = tkinter.Button(
+            self.root, text="Generate", width=buttonWitdh, command=self.generate)
 
         # image processing class canvas
+        self.c = None
 
     def render(self):
         self.frame_tasks.pack()
@@ -59,6 +62,7 @@ class UI:
         self.button_load_tasks.pack()
         self.button_save_tasks.pack()
         self.button_select.pack()
+        self.button_generate.pack()
 
     def add_task(self):
         # get the input
@@ -80,7 +84,7 @@ class UI:
 
     def load_tasks(self):
         try:
-            tasks = pickle.load(open("tasks.dat", "rb"))
+            tasks = pickle.load(open("../tasks.tsk", "rb"))
             self.listbox_tasks.delete(0, tkinter.END)
             for task in tasks:
                 self.listbox_tasks.insert(tkinter.END, task)
@@ -91,18 +95,27 @@ class UI:
     def save_tasks(self):
         tasks = self.listbox_tasks.get(0, self.listbox_tasks.size())
         print(type(tasks))
-        pickle.dump(tasks, open("tasks.tsk", "wb"))
+        pickle.dump(tasks, open("../tasks.tsk", "wb"))
 
     def get_task_as_strs(self):
         return self.listbox_tasks.get(0, self.listbox_tasks.size())
 
-    def select_img_and_generate(self):
-        file_path = filedialog.askopenfilename()
-        c = Canvas.open(file_path)
+    def select_img(self):
+        try:
+            file_path = filedialog.askopenfilename()
+            self.c = Canvas.open(file_path)
+            tkinter.messagebox.showinfo(
+                message="Image opened successfully. :D")
+        except:
+            tkinter.messagebox.showwarning(
+                title="Warning", message="Could not open the file, please try it again")
+
+    def generate(self):
         tasks = self.get_task_as_strs()
         for task in tasks:
-            c.addItemTo(task)
-        c.addDate()
+            self.c.addItemTo(task)
+        self.c.addDate()
+        self.c.display()
 
     def run(self):
         self.root.mainloop()
