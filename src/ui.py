@@ -1,8 +1,8 @@
 # responsible for the GUI using tkinker
+import os
 import tkinter
 import tkinter.messagebox
 from tkinter import filedialog
-from tkinter.ttk import *
 from tkinter import colorchooser
 from tkinter import simpledialog
 import pickle
@@ -15,6 +15,7 @@ def createButton(root, text, command):
 
 
 class UI:
+
     def __init__(self):
         # the main frame
         self.root = tkinter.Tk()
@@ -26,7 +27,7 @@ class UI:
         # tasks section
         self.listbox_tasks = tkinter.Listbox(
             self.frame_tasks, height=20, width=180)
-        #self.listbox_tasks.grid(padx=20, pady=20)
+        # self.listbox_tasks.grid(padx=20, pady=20)
 
         # scroll bar
         self.scrollbar_tasks = tkinter.Scrollbar(self.frame_tasks)
@@ -53,13 +54,20 @@ class UI:
         self.button_select = createButton(
             self.root, "Select Image", self.select_img)
         self.button_generate = createButton(
-            self.root, "Generate", self.generate)
+            self.root, "Preview", self.generate_and_preview)
         self.button_make = createButton(self.root, "Make", self.make)
+        self.button_export = createButton(
+            self.root, "Export Image", self.export)
 
         # image processing class canvas
         self.c = None
+        self.background = None
 
     def render(self):
+        """
+        basically create the frame and pack all the buttons generated in the constructor
+        :return: nothing
+        """
         self.frame_tasks.pack()
         self.scrollbar_tasks.pack(side=tkinter.RIGHT, fill=tkinter.Y)
         self.listbox_tasks.pack(side=tkinter.LEFT)
@@ -71,6 +79,8 @@ class UI:
         self.button_make.pack()
         self.button_select.pack()
         self.button_generate.pack()
+        self.button_export.pack()
+    # methods of the buttons
 
     def add_task(self):
         # get the input
@@ -86,40 +96,41 @@ class UI:
         try:
             task_index = self.listbox_tasks.curselection()[0]
             self.listbox_tasks.delete(task_index)
+            # if we deleted all the task from the task box, the image's task need to be deleted too
+            self.c = self.background
         except:
             tkinter.messagebox.showwarning(
                 title="Warning!", message="You must select a task.")
 
     def load_tasks(self):
         try:
-            tasks = pickle.load(open("../tasks.tsk", "rb"))
+            tasks = pickle.load(open("../tasks.txt", "rb"))
             self.listbox_tasks.delete(0, tkinter.END)
             for task in tasks:
                 self.listbox_tasks.insert(tkinter.END, task)
         except:
             tkinter.messagebox.showwarning(
-                title="Warning!", message="Cannot find tasks.tsk.")
+                title="Warning!", message="Cannot find tasks.txt.")
 
     def save_tasks(self):
         tasks = self.listbox_tasks.get(0, self.listbox_tasks.size())
-        print(type(tasks))
-        pickle.dump(tasks, open("../tasks.tsk", "wb"))
-
-    def get_task_as_strs(self):
-        return self.listbox_tasks.get(0, self.listbox_tasks.size())
+        pickle.dump(tasks, open("../tasks.txt", "wb"))
 
     def select_img(self):
         try:
-            file_path = filedialog.askopenfilename()
+            cwd = os.getcwd() + "/pics"
+            file_path = filedialog.askopenfilename(
+                initialdir=cwd, title="Select a Picture")
             self.c = Canvas.open(file_path)
+            self.background = self.c  # to keep a copy of the original file
             tkinter.messagebox.showinfo(message="Image opened successfully :D")
         except:
             tkinter.messagebox.showwarning(
-                title="Warning", message="Could not open the file, please try it again")
+                title="Warning", message="Image opened unsuccessfully")
 
-    def generate(self):
+    def generate_and_preview(self):
         try:
-            tasks = self.get_task_as_strs()
+            tasks = self.listbox_tasks.get(0, self.listbox_tasks.size())
             for task in tasks:
                 self.c.addItemTo(task)
             self.c.addDate()
@@ -135,7 +146,17 @@ class UI:
             title=" ", prompt="Please enter the height: ")
         (rgb, hx) = colorchooser.askcolor(title="Choose your background color")
         self.c = Canvas.make(int(width), int(height), hx)
+        self.background = self.c  # to keep a copy of the original file
         tkinter.messagebox.showinfo(message="Image created successfully :D")
 
+    def export(self):
+        cwd = os.getcwd() + "/savedFiles"
+        self.c.export(cwd)
+        tkinter.messagebox.showinfo(message="Successfully saved to " + cwd)
+
     def run(self):
+        """
+        to start running the UI
+        :return: nothing
+        """
         self.root.mainloop()

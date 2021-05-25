@@ -25,9 +25,11 @@ class Canvas:
 
     # pass in custom width and height, text size and margin to create a canvas
     @classmethod
-    def make(cls, width, height, BGcolor, t_size, margin):
+    def make(cls, width, height, BGcolor):
+        size = int(height / 20)
+        margin = int(size * 0.75)
         canvas = Image.new("RGB", (width, height), BGcolor)
-        return cls(canvas, t_size, margin)
+        return cls(canvas, size, margin)
 
     # open a new picture as the background and the text size and margin would be determined automatically
     @classmethod
@@ -62,7 +64,8 @@ class Canvas:
         draw.text((self.canvas.width - len(date) * size / 2 - self.margin,
                   self.margin), date, (255, 255, 255), font=date_font)
 
-    def export(self):
+    def export(self, path):
         time = str(datetime.datetime.now())
         time = time[:19].replace(" ", "_")
-        self.canvas.save(time + ".png")
+        dest_dir = path + '/' + time + ".png"
+        self.canvas.save(dest_dir)
