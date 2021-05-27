@@ -19,7 +19,7 @@ class UI:
     def __init__(self):
         # the main frame
         self.root = tkinter.Tk()
-        self.root.title("ReM!ndMe")
+        self.root.title("Mural List")
         self.root.geometry("600x600")
 
         self.frame_tasks = tkinter.Frame(self.root)
