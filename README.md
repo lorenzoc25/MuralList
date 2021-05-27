@@ -8,3 +8,14 @@ Just list your tasks in the taskbox
 Either create your custom resultions and color background, or select a picture as your background
 
 Then within one click, you'll get yourself a wallpaper with the things you need to do on it!
+
+## Usage
+
+if haven't installed PIL
+```bash
+pip install PIL
+```
+then, clone the repo, go do MuralList/src
+```bash
+python3 main.py
+```
