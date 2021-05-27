@@ -28,4 +28,4 @@ pyinstaller main.py
 an executable then should be generated to MuralList/src/dist folder
 
 ## Sample Works
-![alt text](https://github.com/lorenzoc25/MuralList/blob/master/savedFiles/demo.png?raw=true)
+![demo](https://github.com/lorenzoc25/MuralList/blob/master/savedFiles/demo.png?raw=true)
