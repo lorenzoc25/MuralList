@@ -118,7 +118,7 @@ class UI:
 
     def select_img(self):
         try:
-            cwd = os.getcwd() + "/pics"
+            cwd = os.path.dirname(os.getcwd()) + "/pics"
             file_path = filedialog.askopenfilename(
                 initialdir=cwd, title="Select a Picture")
             self.c = Canvas.open(file_path)
@@ -150,7 +150,7 @@ class UI:
         tkinter.messagebox.showinfo(message="Image created successfully :D")
 
     def export(self):
-        cwd = os.getcwd() + "/savedFiles"
+        cwd = os.path.dirname(os.getcwd()) + "/savedFiles"
         self.c.export(cwd)
         tkinter.messagebox.showinfo(message="Successfully saved to " + cwd)
 
