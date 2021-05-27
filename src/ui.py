@@ -19,7 +19,7 @@ class UI:
     def __init__(self):
         # the main frame
         self.root = tkinter.Tk()
-        self.root.title("Mural List")
+        self.root.title("ReM!ndMe")
         self.root.geometry("600x600")
 
         self.frame_tasks = tkinter.Frame(self.root)
@@ -52,16 +52,18 @@ class UI:
         self.button_save_tasks = createButton(
             self.root, "Save tasks", self.save_tasks)
         self.button_select = createButton(
-            self.root, "Select Image", self.select_img)
+            self.root, "Select an existing Background Image", self.select_img)
         self.button_generate = createButton(
             self.root, "Preview", self.generate_and_preview)
-        self.button_make = createButton(self.root, "Make", self.make)
+        self.button_make = createButton(
+            self.root, "Customize Background Image", self.make)
         self.button_export = createButton(
             self.root, "Export Image", self.export)
 
         # image processing class canvas
         self.c = None
         self.background = None
+        self.written_to_image = False
 
     def render(self):
         """
@@ -98,6 +100,7 @@ class UI:
             self.listbox_tasks.delete(task_index)
             # if we deleted all the task from the task box, the image's task need to be deleted too
             self.c = self.background
+            self.written_to_image = False
         except:
             tkinter.messagebox.showwarning(
                 title="Warning!", message="You must select a task.")
@@ -130,26 +133,40 @@ class UI:
 
     def generate_and_preview(self):
         try:
-            tasks = self.listbox_tasks.get(0, self.listbox_tasks.size())
-            for task in tasks:
-                self.c.addItemTo(task)
-            self.c.addDate()
+            if not self.written_to_image:
+                tasks = self.listbox_tasks.get(0, self.listbox_tasks.size())
+                for task in tasks:
+                    self.c.addItemTo(task)
+                self.c.addDate()
+                self.written_to_image = True
             self.c.display()
         except:
             tkinter.messagebox.showwarning(
                 title="Warning", message="You haven't loaded/created anything!")
 
     def make(self):
-        width = simpledialog.askstring(
-            title=" ", prompt="Please enter the width: ")
-        height = simpledialog.askstring(
-            title=" ", prompt="Please enter the height: ")
-        (rgb, hx) = colorchooser.askcolor(title="Choose your background color")
-        self.c = Canvas.make(int(width), int(height), hx)
-        self.background = self.c  # to keep a copy of the original file
-        tkinter.messagebox.showinfo(message="Image created successfully :D")
+        try:
+            width = simpledialog.askstring(
+                title=" ", prompt="Please enter the width: ")
+            height = simpledialog.askstring(
+                title=" ", prompt="Please enter the height: ")
+            (rgb, hx) = colorchooser.askcolor(
+                title="Choose your background color")
+            self.c = Canvas.make(int(width), int(height), hx)
+            self.background = self.c  # to keep a copy of the original file
+            tkinter.messagebox.showinfo(
+                message="Image created successfully :D")
+        except:
+            tkinter.messagebox.showwarning(title="Warning", message="An error has occurred. Please check your input "
+                                                                    "and try again")
 
     def export(self):
+        if not self.written_to_image:
+            tasks = self.listbox_tasks.get(0, self.listbox_tasks.size())
+            for task in tasks:
+                self.c.addItemTo(task)
+            self.c.addDate()
+            self.written_to_image = True
         cwd = os.path.dirname(os.getcwd()) + "/savedFiles"
         self.c.export(cwd)
         tkinter.messagebox.showinfo(message="Successfully saved to " + cwd)

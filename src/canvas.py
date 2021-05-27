@@ -19,9 +19,11 @@ class Canvas:
         self.margin = margin
         self.text_size = t_size
         self.items = []
-        self.y_pos = []
+        self.x = margin
+        self.y_pos = 0
         self.gap = t_size / 2
         self.font = ImageFont.truetype(fontPath, self.text_size)
+        self.lastRowIndex = 0
 
     # pass in custom width and height, text size and margin to create a canvas
     @classmethod
@@ -48,13 +50,20 @@ class Canvas:
     def addItemTo(self, text):
         self.items.append(text)
         if not self.y_pos:
-            self.y_pos.append(self.margin)  # starting position:  y = 50
+            self.y_pos = self.margin  # starting position:  y = 50
         else:
-            self.y_pos.append(self.y_pos[-1] + self.gap + self.text_size / 2)
+            self.y_pos = (self.y_pos + self.gap + self.text_size / 2)
+            if self.y_pos > self.canvas.height:  # if the item passes beyond the height
+                self.y_pos = self.margin  # go back to the starting position:  y = 50
+                maxLen = len(max(self.items[self.lastRowIndex:], key=len))
+                offset = maxLen * self.text_size + 10
+                self.x += offset
+                self.lastRowIndex = len(self.items)
+
         draw = ImageDraw.Draw(self.canvas)
         # coordinate
-        draw.text(
-            (self.margin, self.y_pos[-1]), self.items[-1], (255, 255, 255), font=self.font)
+        draw.text((self.x, self.y_pos),
+                  self.items[-1], (255, 255, 255), font=self.font)
 
     def addDate(self):
         size = int(0.8 * self.text_size)
