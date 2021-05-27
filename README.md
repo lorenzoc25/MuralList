@@ -19,3 +19,13 @@ then, clone the repo, go do MuralList/src
 ```bash
 python3 main.py
 ```
+or can use PyInstaller to pack the app
+```bash
+pip install pyinstaller
+cd MuralList/src
+pyinstaller main.py
+```
+an executable then should be generated to MuralList/src/dist folder
+
+## Sample Works
+![alt text](https://github.com/lorenzoc25/MuralList/blob/master/savedFiles/demo.png?raw=true)
