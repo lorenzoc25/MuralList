@@ -29,3 +29,6 @@ an executable then should be generated to MuralList/src/dist folder
 
 ## Sample Works
 ![demo](https://github.com/lorenzoc25/MuralList/blob/main/savedFiles/demo.png?raw=true)
+
+## What's next
+This application has definitely has a lot of room of improvements, for example, I'm planning to touch up the UI design more and also to add more customizable features like allow the user to choose their own fonts, customize text size & margins etc. 
