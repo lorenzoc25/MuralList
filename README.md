@@ -32,3 +32,4 @@ an executable then should be generated to MuralList/src/dist folder
 
 ## What's next
 This application has definitely has a lot of room of improvements, for example, I'm planning to touch up the UI design more and also to add more customizable features like allow the user to choose their own fonts, customize text size & margins etc. 
+Also, I'm considering make this App into a WebApp one day so this app can be more convenient to use.
